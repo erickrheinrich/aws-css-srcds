@@ -278,7 +278,12 @@ def generate_template():
             UserData=Base64(
                 Join('', [
                     '#!/bin/bash -xe\n',
-                    '/opt/aws/bin/cfn-init -v ',
+                    'apt-get update\n',
+                    'apt-get -y upgrade\n',
+                    'apt-get -y install python-pip\n',
+                    'pip install --upgrade pip\n',
+                    'pip install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-latest.tar.gz\n',
+                    '/usr/local/bin/cfn-init -v ',
                     '         --stack ',
                     ref_stack_name,
                     '         --resource CSSServerInstance ',
@@ -302,11 +307,17 @@ def generate_template():
                         files={
                             '/tmp/init-config.sh': {
                                 'source': Ref(css_init_config_script),
-                                'authentication': 'S3AccessCreds'
+                                'authentication': 'S3AccessCreds',
+                                'mode': '000755',
+                                'owner': 'root',
+                                'group': 'root'
                             },
                             '/tmp/css-install-script.sh': {
                                 'source': Ref(css_install_script),
-                                'authentication': 'S3AccessCreds'
+                                'authentication': 'S3AccessCreds',
+                                'mode': '000755',
+                                'owner': 'root',
+                                'group': 'root'
                             },
                             '/tmp/cfg/mapcycle.txt': {
                                 'source': Ref(css_mapcycle_txt),
@@ -318,7 +329,11 @@ def generate_template():
                             }
                         },
                         commands={
-                            'command01': {
+                            '1_set_chmod': {
+                                'command': 'chmod 755 /tmp/*.sh',
+                                'cwd': '~',
+                            },
+                            '2_run_init-config.sh': {
                                 'command': '/tmp/init-config.sh',
                                 'cwd': '~',
                                 'env': { 'RCON_PASSWORD': Ref(css_rcon_password) }

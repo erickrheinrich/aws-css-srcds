@@ -68,6 +68,7 @@
     object: "cfg/mapcycle.txt"
     expiration: 1800
   register: css_mapcycle_txt
+  tags: upload_css_files
 
 - name: upload server.cfg to s3
   aws_s3:
@@ -79,6 +80,7 @@
     object: "cfg/server.cfg"
     expiration: 1800
   register: css_server_cfg
+  tags: upload_css_files
 
 - name: upload mods.tgz to s3
   aws_s3:
@@ -90,6 +92,7 @@
     object: "mods.tgz"
     expiration: 1800
   register: css_mods_tgz
+  tags: upload_css_files
 
 - name: deploy instance stack
   cloudformation:
@@ -102,11 +105,11 @@
     template_parameters:
       AWSAccessKey: "{{ aws_access_key }}"
       AWSSecretKey: "{{ aws_secret_key }}"
-      CSSInstanceName: "{{ stack_name }}-css-server"
       AmiIdLinux: "{{ami_id_linux}}"
       InstanceType: "{{css_server_instance_type}}"
       IAMRole: "{{iam_role}}"
       KeyName: "{{key_name}}"
+      CSSInstanceName: "{{ stack_name }}-css-server"
       CSSInitConfigScript: "{{ css_init_config_script.url | urlsplit('scheme') }}://{{ css_init_config_script.url | urlsplit('hostname') }}{{ css_init_config_script.url | urlsplit('path') }}"
       CSSInstallScript: "{{ css_install_script.url | urlsplit('scheme') }}://{{ css_install_script.url | urlsplit('hostname') }}{{ css_install_script.url | urlsplit('path') }}"
       CSSModsTgz: "{{ css_mods_tgz.url | urlsplit('scheme') }}://{{ css_mods_tgz.url | urlsplit('hostname') }}{{ css_mods_tgz.url | urlsplit('path') }}"
