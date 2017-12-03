@@ -1,0 +1,52 @@
+---
+- name: create temporary template file
+  tempfile:
+    state: file
+    suffix: XXXXXXXXXXXXXXXX.json
+  register: infra_template_path
+
+- name: install requirements
+  pip:
+    requirements: "{{playbook_dir}}/requirements.txt"
+
+- name: generate and write cloud formation infrastructure template to file
+  shell: "{{ python_path }}python {{role_path}}/files/base-infrastructure.py > {{infra_template_path.path}}"
+
+- name: upload template to s3
+  aws_s3:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    bucket: "{{ bucket_name }}"
+    mode: put
+    src: "{{infra_template_path.path}}"
+    object: "{{stack_name}}-infra.json"
+    expiration: 1800
+  register: cfn_infra_template
+
+- name: deploy infrastructure stack
+  cloudformation:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    region: "{{aws_region}}"
+    stack_name: "{{stack_name}}-infra-{{ ansible_date_time.epoch }}"
+    state: present
+    template_url: "{{cfn_infra_template.url}}"
+    template_parameters:
+      EnvName: "{{ environment_name }}"
+      AWSRegion: "{{ aws_region }}"
+    tags:
+      Application: "css-server"
+      Environment: "{{environment_name}}"
+  register: stack
+
+- name: set infra with stack outputs
+  set_fact:
+    infra: "{{ stack.stack_outputs }}"
+
+- name: print outputs
+  debug: var=infra
+
+- name: remove temporary template file
+  file:
+    path: "{{infra_template_path.path}}"
+    state: absent

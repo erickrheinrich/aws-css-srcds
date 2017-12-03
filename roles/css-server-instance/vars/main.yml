@@ -1,0 +1,40 @@
+# infra output
+create_infra: false
+
+# infra:
+#   PrivateSubnet1: "subnet-037f845e"
+#   PrivateSubnet2: "subnet-229f0346"
+#   PublicSubnet1: "subnet-7e06fd23"
+#   PublicSubnet2: "subnet-ca9408ae"
+#   StackID: "heinrich-infrastructure-1510496410"
+#   VPCId: "vpc-2794135f"
+
+infra:
+  PrivateSubnet1: "subnet-fbbc1ad4"
+  PrivateSubnet2: "subnet-817a18ca"
+  PublicSubnet1: "subnet-61b81e4e"
+  PublicSubnet2: "subnet-4074160b"
+  StackID: "heinrich-infra-1512266627"
+  VPCId: "vpc-3669024e"
+
+# cloudformation parameters
+aws_access_key: 
+aws_secret_key: 
+aws_region: us-east-1
+ami_id_linux: ami-aa2ea6d0
+environment_name: heinrich
+stack_name: "{{environment_name}}"
+bucket_name: heinrich-cloudformation
+css_server_instance_type: t2.micro
+iam_role: Standard_Instance_Role
+key_name: css-server
+
+# css server installation environment variables
+css_rcon_password: rcon123456
+css_mods_mmsource: mmsource-1.10.6-linux.tar.gz
+css_mods_sourcemod: sourcemod-1.8.0-git5982-linux.tar.gz
+css_mods_cssdm: cssdm-2.1.6-git236-linux.tar.gz
+css_mods_quake_sounds: quake_sounds1.8.zip
+css_mods_mapchooser: mapchooser_extended_1.10.2.zip
+css_mods_damage_report: gem_damage_report.smx
+python_path:
