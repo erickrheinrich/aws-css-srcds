@@ -1,0 +1,11 @@
+- hosts: localhost
+  connection: local
+  roles:
+    - role: infra
+  tags: ["infrastructure"]
+
+- hosts: localhost
+  connection: local
+  roles:
+    - role: css-server-instance
+  tags: ["css-server-instance"]

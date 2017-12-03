@@ -1,0 +1,18 @@
+#!/bin/bash
+
+wget -O /tmp/steamcmd_linux.tar.gz http://media.steampowered.com/installer/steamcmd_linux.tar.gz
+tar -xvzf /tmp/steamcmd_linux.tar.gz
+rm /tmp/steamcmd_linux.tar.gz
+./steamcmd.sh +login anonymous +force_install_dir ./css +app_update 232330 validate +quit
+export RCON_PASSWORD={{ css_rcon_password }}
+cd /home/steam/css/cstrike
+tar zxvf /tmp/mods/{{ css_mods_mmsource }}
+tar zxvf /tmp/mods/{{ css_mods_sourcemod }}
+tar zxvf /tmp/mods/{{ css_mods_cssdm }}
+unzip /tmp/mods/{{ css_mods_quake_sounds }}
+unzip /tmp/mods/{{ css_mods_mapchooser }}
+mv /tmp/mods/{{ css_mods_damage_report }} addons/sourcemod/plugins
+rm /tmp/mods/*
+mv /tmp/cfg/* cfg/
+sed -i 's/cssdm_spawn_method "preset"/cssdm_spawn_method "none"/' cfg/cssdm/cssdm.cfg
+sed -i 's/cssdm_allow_c4 "0"/cssdm_allow_c4 "1"/' cfg/cssdm/cssdm.cfg
