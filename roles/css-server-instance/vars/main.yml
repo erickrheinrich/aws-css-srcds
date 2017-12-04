@@ -10,12 +10,12 @@ create_infra: false
 #   VPCId: "vpc-2794135f"
 
 infra:
-  PrivateSubnet1: "subnet-fbbc1ad4"
-  PrivateSubnet2: "subnet-817a18ca"
-  PublicSubnet1: "subnet-61b81e4e"
-  PublicSubnet2: "subnet-4074160b"
-  StackID: "heinrich-infra-1512266627"
-  VPCId: "vpc-3669024e"
+  PrivateSubnet1: "subnet-a7309688"
+  PrivateSubnet2: "subnet-abc5a7e0"
+  PublicSubnet1: "subnet-c23096ed"
+  PublicSubnet2: "subnet-cfc5a784"
+  StackID: "heinrich-infra-1512297939"
+  VPCId: "vpc-f6c4af8e"
 
 # cloudformation parameters
 aws_access_key: 
