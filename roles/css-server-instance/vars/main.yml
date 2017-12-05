@@ -1,21 +1,13 @@
 # infra output
 create_infra: false
 
-# infra:
-#   PrivateSubnet1: "subnet-037f845e"
-#   PrivateSubnet2: "subnet-229f0346"
-#   PublicSubnet1: "subnet-7e06fd23"
-#   PublicSubnet2: "subnet-ca9408ae"
-#   StackID: "heinrich-infrastructure-1510496410"
-#   VPCId: "vpc-2794135f"
-
 infra:
-  PrivateSubnet1: "subnet-a7309688"
-  PrivateSubnet2: "subnet-abc5a7e0"
-  PublicSubnet1: "subnet-c23096ed"
-  PublicSubnet2: "subnet-cfc5a784"
-  StackID: "heinrich-infra-1512297939"
-  VPCId: "vpc-f6c4af8e"
+  PrivateSubnet1: "subnet-90e746bf"
+  PrivateSubnet2: "subnet-bc2944f7"
+  PublicSubnet1: "subnet-7818be57"
+  PublicSubnet2: "subnet-c42a478f"
+  StackID: "heinrich-infra-1512307115"
+  VPCId: "vpc-0a315b72"
 
 # cloudformation parameters
 aws_access_key: 

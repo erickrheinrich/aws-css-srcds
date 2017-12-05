@@ -278,10 +278,7 @@ def generate_template():
             UserData=Base64(
                 Join('', [
                     '#!/bin/bash -xe\n',
-                    'apt-get update\n',
-                    'apt-get -y upgrade\n',
-                    'apt-get -y install python-pip\n',
-                    'pip install --upgrade pip\n',
+                    'curl https://bootstrap.pypa.io/get-pip.py | python\n',
                     'pip install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-latest.tar.gz\n',
                     '/usr/local/bin/cfn-init -v ',
                     '         --stack ',
@@ -329,10 +326,10 @@ def generate_template():
                             }
                         },
                         commands={
-                            '1_set_chmod': {
-                                'command': 'chmod 755 /tmp/*.sh',
-                                'cwd': '~',
-                            },
+                            # '1_set_chmod': {
+                            #     'command': 'chmod 755 /tmp/*.sh',
+                            #     'cwd': '~',
+                            # },
                             '2_run_init-config.sh': {
                                 'command': '/tmp/init-config.sh',
                                 'cwd': '~',
