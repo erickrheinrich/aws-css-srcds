@@ -1,0 +1,7 @@
+# cloudformation parameters
+aws_access_key: 
+aws_secret_key: 
+aws_region: us-east-1
+bucket_name: heinrich-cloudformation
+
+python_path:
