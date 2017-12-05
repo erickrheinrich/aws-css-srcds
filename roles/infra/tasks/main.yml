@@ -31,9 +31,6 @@
     stack_name: "{{stack_name}}-infra-{{ ansible_date_time.epoch }}"
     state: present
     template_url: "{{cfn_infra_template.url}}"
-    template_parameters:
-      EnvName: "{{ environment_name }}"
-      AWSRegion: "{{ aws_region }}"
     tags:
       Application: "css-server"
       Environment: "{{environment_name}}"
@@ -43,10 +40,10 @@
   set_fact:
     infra: "{{ stack.stack_outputs }}"
 
-- name: print outputs
-  debug: var=infra
-
 - name: remove temporary template file
   file:
     path: "{{infra_template_path.path}}"
     state: absent
+
+- name: print outputs
+  debug: var=infra
