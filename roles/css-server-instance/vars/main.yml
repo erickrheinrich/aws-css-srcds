@@ -2,24 +2,24 @@
 create_infra: false
 upload_css_files: false
 
-infra:
-  PublicSubnet1: "subnet-5d8a2972"
-  StackID: "heinrich-infra-1512434321"
-  VPCId: "vpc-1d641365"
+# infra:
+#   PublicSubnet1: "subnet-5d8a2972"
+#   StackID: "heinrich-infra-1512434321"
+#   VPCId: "vpc-1d641365"
 
-css_files:
-  css_mapcycle_txt: "https://heinrich-cloudformation.s3.amazonaws.com/cfg/mapcycle.txt"
-  css_mods_tgz: "https://heinrich-cloudformation.s3.amazonaws.com/mods.tgz"
-  css_server_cfg: "https://heinrich-cloudformation.s3.amazonaws.com/cfg/server.cfg"
+# css_files:
+#   css_mapcycle_txt: "https://heinrich-cloudformation.s3.amazonaws.com/cfg/mapcycle.txt"
+#   css_mods_tgz: "https://heinrich-cloudformation.s3.amazonaws.com/mods.tgz"
+#   css_server_cfg: "https://heinrich-cloudformation.s3.amazonaws.com/cfg/server.cfg"
 
 # cloudformation parameters
 aws_access_key: 
 aws_secret_key: 
-aws_region: us-east-1
-ami_id_linux: ami-aa2ea6d0
+aws_region: sa-east-1
+ami_id_linux: ami-bf8ecbd3 # us-east-1: ami-aa2ea6d0
 environment_name: heinrich
 stack_name: "{{environment_name}}"
-bucket_name: heinrich-cloudformation
+bucket_name: heinrich-cfn
 css_server_instance_type: t2.micro
 iam_role: Standard_Instance_Role
 key_name: css-server
