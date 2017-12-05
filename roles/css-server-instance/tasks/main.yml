@@ -5,6 +5,12 @@
   when:
     - create_infra
 
+- name: call upload-css-files if not created
+  include_role:
+    name: upload-css-files
+  when:
+    - upload_css_files
+
 - name: create temporary template file
   tempfile:
     state: file
@@ -58,39 +64,6 @@
     expiration: 1800
   register: css_install_script
 
-- name: upload mapcycle.txt to s3
-  aws_s3:
-    aws_access_key: "{{ aws_access_key }}"
-    aws_secret_key: "{{ aws_secret_key }}"
-    bucket: "{{ bucket_name }}"
-    mode: put
-    src: "{{role_path}}/files/cfg/mapcycle.txt"
-    object: "cfg/mapcycle.txt"
-    expiration: 1800
-  register: css_mapcycle_txt
-
-- name: upload server.cfg to s3
-  aws_s3:
-    aws_access_key: "{{ aws_access_key }}"
-    aws_secret_key: "{{ aws_secret_key }}"
-    bucket: "{{ bucket_name }}"
-    mode: put
-    src: "{{role_path}}/files/cfg/server.cfg"
-    object: "cfg/server.cfg"
-    expiration: 1800
-  register: css_server_cfg
-
-- name: upload mods.tgz to s3
-  aws_s3:
-    aws_access_key: "{{ aws_access_key }}"
-    aws_secret_key: "{{ aws_secret_key }}"
-    bucket: "{{ bucket_name }}"
-    mode: put
-    src: "{{role_path}}/files/mods.tgz"
-    object: "mods.tgz"
-    expiration: 1800
-  register: css_mods_tgz
-
 - name: deploy instance stack
   cloudformation:
     aws_access_key: "{{ aws_access_key }}"
@@ -102,25 +75,29 @@
     template_parameters:
       AWSAccessKey: "{{ aws_access_key }}"
       AWSSecretKey: "{{ aws_secret_key }}"
-      CSSInstanceName: "{{ stack_name }}-css-server"
       AmiIdLinux: "{{ami_id_linux}}"
       InstanceType: "{{css_server_instance_type}}"
       IAMRole: "{{iam_role}}"
       KeyName: "{{key_name}}"
+      CSSInstanceName: "{{ stack_name }}-css-server"
       CSSInitConfigScript: "{{ css_init_config_script.url | urlsplit('scheme') }}://{{ css_init_config_script.url | urlsplit('hostname') }}{{ css_init_config_script.url | urlsplit('path') }}"
       CSSInstallScript: "{{ css_install_script.url | urlsplit('scheme') }}://{{ css_install_script.url | urlsplit('hostname') }}{{ css_install_script.url | urlsplit('path') }}"
-      CSSModsTgz: "{{ css_mods_tgz.url | urlsplit('scheme') }}://{{ css_mods_tgz.url | urlsplit('hostname') }}{{ css_mods_tgz.url | urlsplit('path') }}"
-      CSSMapcycleTxt: "{{ css_mapcycle_txt.url | urlsplit('scheme') }}://{{ css_mapcycle_txt.url | urlsplit('hostname') }}{{ css_mapcycle_txt.url | urlsplit('path') }}"
-      CSSServerCfg: "{{ css_server_cfg.url | urlsplit('scheme') }}://{{ css_server_cfg.url | urlsplit('hostname') }}{{ css_server_cfg.url | urlsplit('path') }}"
+      CSSModsTgz: "{{ css_files['css_mods_tgz'] }}"
+      CSSMapcycleTxt: "{{ css_files['css_mapcycle_txt'] }}"
+      CSSServerCfg: "{{ css_files['css_server_cfg'] }}"
       CSSRconPassword: "{{ css_rcon_password }}"
       BucketName: "{{ bucket_name }}"
       VPCId: "{{ infra['VPCId'] }}"
-      PublicSubnet: "{{ infra['PublicSubnet1'] }}"
-      PrivateSubnet: "{{ infra['PrivateSubnet1'] }}"
+      PublicSubnet1: "{{ infra['PublicSubnet1'] }}"
     tags:
       Name: "{{environment_name}}-css-server"
       Application: "css-server"
       Environment: "{{environment_name}}"
+  register: stack
+
+- name: set infra with stack outputs
+  set_fact:
+    css_server_instance: "{{ stack.stack_outputs }}"
 
 - name: remove temporary template file
   file:
@@ -131,3 +108,6 @@
   file:
     path: "{{ userdata_css_server.path }}"
     state: absent
+
+- name: print outputs
+  debug: var=css_server_instance

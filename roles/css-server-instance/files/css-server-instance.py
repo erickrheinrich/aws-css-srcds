@@ -60,12 +60,7 @@ def generate_template():
     ))
 
     public_subnet = template.add_parameter(Parameter(
-        'PublicSubnet',
-        Type='String',
-    ))
-
-    private_subnet = template.add_parameter(Parameter(
-        'PrivateSubnet',
+        'PublicSubnet1',
         Type='String',
     ))
 
@@ -207,55 +202,6 @@ def generate_template():
             VpcId=Ref(vpc_id),
         ))
 
-    private_security_group = template.add_resource(
-        SecurityGroup(
-            'PrivateSecurityGroup',
-            GroupDescription='Security group for instances in the private subnet(s)',
-            SecurityGroupIngress=[
-                SecurityGroupRule(
-                    IpProtocol='icmp',
-                    FromPort='8',
-                    ToPort='-1',
-                    CidrIp='0.0.0.0/0')],
-            SecurityGroupEgress=[
-                SecurityGroupRule(
-                    IpProtocol='icmp',
-                    FromPort='8',
-                    ToPort='-1',
-                    CidrIp='0.0.0.0/0'),
-                SecurityGroupRule(
-                    IpProtocol='tcp',
-                    FromPort='80',
-                    ToPort='80',
-                    CidrIp='0.0.0.0/0'),
-                SecurityGroupRule(
-                    IpProtocol='tcp',
-                    FromPort='443',
-                    ToPort='443',
-                    CidrIp='0.0.0.0/0'),
-                SecurityGroupRule(
-                    IpProtocol='tcp',
-                    FromPort='53',
-                    ToPort='53',
-                    CidrIp='0.0.0.0/0'),
-                SecurityGroupRule(
-                    IpProtocol='udp',
-                    FromPort='53',
-                    ToPort='53',
-                    CidrIp='0.0.0.0/0'),
-                SecurityGroupRule(
-                    IpProtocol='tcp',
-                    FromPort='0',
-                    ToPort='65535',
-                    SourceSecurityGroupId=Ref(public_security_group)),
-                SecurityGroupRule(
-                    IpProtocol='udp',
-                    FromPort='0',
-                    ToPort='65535',
-                    SourceSecurityGroupId=Ref(public_security_group))],
-            VpcId=Ref(vpc_id),
-        ))
-
     # Create CSS Server instance in the public subnet
     css_server_instance = template.add_resource(
         Instance(
@@ -278,7 +224,17 @@ def generate_template():
             UserData=Base64(
                 Join('', [
                     '#!/bin/bash -xe\n',
-                    '/opt/aws/bin/cfn-init -v ',
+                    'echo LC_ALL="en_US.UTF-8" >> /etc/environment\n',
+                    'export LC_ALL="en_US.UTF-8"\n',
+                    'apt-get update\n',
+                    'apt-get -y install python-minimal\n',
+                    'echo -e "import sys\nreload(sys)\nsys.setdefaultencoding(\'utf8\')" > /usr/local/lib/python2.7/dist-packages/setEncoding.py\n'
+                    'echo PYTHONSTARTUP=/usr/local/lib/python2.7/dist-packages/setEncoding.py >> /etc/environment\n',
+                    'export PYTHONSTARTUP=/usr/local/lib/python2.7/dist-packages/setEncoding.py\n',
+                    'curl https://bootstrap.pypa.io/get-pip.py > /tmp/get-pip.py\n',
+                    'python /tmp/get-pip.py\n',
+                    'pip install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-latest.tar.gz\n',
+                    '/usr/local/bin/cfn-init -v ',
                     '         --stack ',
                     ref_stack_name,
                     '         --resource CSSServerInstance ',
@@ -302,11 +258,17 @@ def generate_template():
                         files={
                             '/tmp/init-config.sh': {
                                 'source': Ref(css_init_config_script),
-                                'authentication': 'S3AccessCreds'
+                                'authentication': 'S3AccessCreds',
+                                'mode': '000755',
+                                'owner': 'root',
+                                'group': 'root'
                             },
                             '/tmp/css-install-script.sh': {
                                 'source': Ref(css_install_script),
-                                'authentication': 'S3AccessCreds'
+                                'authentication': 'S3AccessCreds',
+                                'mode': '000755',
+                                'owner': 'root',
+                                'group': 'root'
                             },
                             '/tmp/cfg/mapcycle.txt': {
                                 'source': Ref(css_mapcycle_txt),
@@ -318,7 +280,7 @@ def generate_template():
                             }
                         },
                         commands={
-                            'command01': {
+                            '1_run_init-config.sh': {
                                 'command': '/tmp/init-config.sh',
                                 'cwd': '~',
                                 'env': { 'RCON_PASSWORD': Ref(css_rcon_password) }

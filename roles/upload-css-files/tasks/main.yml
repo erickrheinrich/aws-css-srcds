@@ -1,0 +1,42 @@
+- name: upload mapcycle.txt to s3
+  aws_s3:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    bucket: "{{ bucket_name }}"
+    mode: put
+    src: "{{role_path}}/files/cfg/mapcycle.txt"
+    object: "cfg/mapcycle.txt"
+    expiration: 1800
+  register: css_mapcycle_txt
+
+- name: upload server.cfg to s3
+  aws_s3:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    bucket: "{{ bucket_name }}"
+    mode: put
+    src: "{{role_path}}/files/cfg/server.cfg"
+    object: "cfg/server.cfg"
+    expiration: 1800
+  register: css_server_cfg
+
+- name: upload mods.tgz to s3
+  aws_s3:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    bucket: "{{ bucket_name }}"
+    mode: put
+    src: "{{role_path}}/files/mods.tgz"
+    object: "mods.tgz"
+    expiration: 1800
+  register: css_mods_tgz
+
+- name: set css_files with S3 urls
+  set_fact:
+    css_files:
+      css_mapcycle_txt: "{{ css_mapcycle_txt.url | urlsplit('scheme') }}://{{ css_mapcycle_txt.url | urlsplit('hostname') }}{{ css_mapcycle_txt.url | urlsplit('path') }}"
+      css_server_cfg: "{{ css_server_cfg.url | urlsplit('scheme') }}://{{ css_server_cfg.url | urlsplit('hostname') }}{{ css_server_cfg.url | urlsplit('path') }}"
+      css_mods_tgz: "{{ css_mods_tgz.url | urlsplit('scheme') }}://{{ css_mods_tgz.url | urlsplit('hostname') }}{{ css_mods_tgz.url | urlsplit('path') }}"
+
+- name: print outputs
+  debug: var=css_files
