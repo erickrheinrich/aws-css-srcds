@@ -2,15 +2,15 @@
 create_infra: false
 upload_css_files: false
 
-# infra:
-#   PublicSubnet1: "subnet-5d8a2972"
-#   StackID: "heinrich-infra-1512434321"
-#   VPCId: "vpc-1d641365"
+infra:
+  PublicSubnet1: "subnet-cf90f1a8"
+  StackID: "heinrich-infra-1512446180"
+  VPCId: "vpc-12e40675"
 
-# css_files:
-#   css_mapcycle_txt: "https://heinrich-cloudformation.s3.amazonaws.com/cfg/mapcycle.txt"
-#   css_mods_tgz: "https://heinrich-cloudformation.s3.amazonaws.com/mods.tgz"
-#   css_server_cfg: "https://heinrich-cloudformation.s3.amazonaws.com/cfg/server.cfg"
+css_files:
+  css_mapcycle_txt: "https://heinrich-cfn.s3.amazonaws.com/cfg/mapcycle.txt"
+  css_mods_tgz: "https://heinrich-cfn.s3.amazonaws.com/mods.tgz"
+  css_server_cfg: "https://heinrich-cfn.s3.amazonaws.com/cfg/server.cfg"
 
 # cloudformation parameters
 aws_access_key: 
@@ -32,5 +32,6 @@ css_mods_cssdm: cssdm-2.1.6-git236-linux.tar.gz
 css_mods_quake_sounds: quake_sounds1.8.zip
 css_mods_mapchooser: mapchooser_extended_1.10.2.zip
 css_mods_damage_report: gem_damage_report.smx
+steam_account: 
 
 python_path:

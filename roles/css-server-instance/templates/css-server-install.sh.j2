@@ -16,5 +16,10 @@ rm /tmp/mods/*
 mv /tmp/cfg/* cfg/
 sed -i 's/cssdm_spawn_method "preset"/cssdm_spawn_method "none"/' cfg/cssdm/cssdm.cfg
 sed -i 's/cssdm_allow_c4 "0"/cssdm_allow_c4 "1"/' cfg/cssdm/cssdm.cfg
+export STEAM_ACCOUNT={{ steam_account }}
+if [ "x$STEAM_ACCOUNT" != "x" ]
+then
+  echo -e "\nsv_setsteamaccount $STEAM_ACCOUNT" >> /home/steam/css/cstrike/cfg/server.cfg
+fi
 mkdir ~/.steam/sdk32/
 cp ~/css/bin/steamclient.so ~/.steam/sdk32/
