@@ -3,9 +3,9 @@ create_infra: false
 upload_css_files: false
 
 infra:
-  PublicSubnet1: "subnet-cf90f1a8"
-  StackID: "heinrich-infra-1512446180"
-  VPCId: "vpc-12e40675"
+  PublicSubnet1: "subnet-f1690b96"
+  StackID: "heinrich-infra-1512751683"
+  VPCId: "vpc-50698537"
 
 css_files:
   css_mapcycle_txt: "https://heinrich-cfn.s3.amazonaws.com/cfg/mapcycle.txt"
