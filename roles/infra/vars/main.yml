@@ -1,8 +1,8 @@
 # cloudformation parameters
-aws_region: us-east-1
+aws_region: sa-east-1
 environment_name: heinrich
 stack_name: "{{environment_name}}"
-bucket_name: heinrich-cloudformation
+bucket_name: heinrich-cfn
 iam_role: Standard_Instance_Role
 python_path:
 

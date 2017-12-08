@@ -182,7 +182,52 @@ def generate_template():
                     IpProtocol='udp',
                     FromPort='26901',
                     ToPort='26901',
-                    CidrIp='0.0.0.0/0')],
+                    CidrIp='0.0.0.0/0'),
+                SecurityGroupRule(
+                    IpProtocol='icmpv6',
+                    FromPort='-1',
+                    ToPort='-1',
+                    CidrIpv6='::/0'),
+                SecurityGroupRule(
+                    IpProtocol='tcp',
+                    FromPort='22',
+                    ToPort='22',
+                    CidrIpv6='::/0'),
+                SecurityGroupRule(
+                    IpProtocol='tcp',
+                    FromPort='1200',
+                    ToPort='1200',
+                    CidrIpv6='::/0'),
+                SecurityGroupRule(
+                    IpProtocol='udp',
+                    FromPort='1200',
+                    ToPort='1200',
+                    CidrIpv6='::/0'),
+                SecurityGroupRule(
+                    IpProtocol='udp',
+                    FromPort='27005',
+                    ToPort='27005',
+                    CidrIpv6='::/0'),
+                SecurityGroupRule(
+                    IpProtocol='tcp',
+                    FromPort='27015',
+                    ToPort='27015',
+                    CidrIpv6='::/0'),
+                SecurityGroupRule(
+                    IpProtocol='udp',
+                    FromPort='27015',
+                    ToPort='27015',
+                    CidrIpv6='::/0'),
+                SecurityGroupRule(
+                    IpProtocol='udp',
+                    FromPort='27020',
+                    ToPort='27020',
+                    CidrIpv6='::/0'),
+                SecurityGroupRule(
+                    IpProtocol='udp',
+                    FromPort='26901',
+                    ToPort='26901',
+                    CidrIpv6='::/0')],
             SecurityGroupEgress=[
                 SecurityGroupRule(
                     IpProtocol='icmp',
@@ -198,7 +243,22 @@ def generate_template():
                     IpProtocol='tcp',
                     FromPort='443',
                     ToPort='443',
-                    CidrIp='0.0.0.0/0')],
+                    CidrIp='0.0.0.0/0'),
+                SecurityGroupRule(
+                    IpProtocol='icmpv6',
+                    FromPort='-1',
+                    ToPort='-1',
+                    CidrIpv6='::/0'),
+                SecurityGroupRule(
+                    IpProtocol='tcp',
+                    FromPort='80',
+                    ToPort='80',
+                    CidrIpv6='::/0'),
+                SecurityGroupRule(
+                    IpProtocol='tcp',
+                    FromPort='443',
+                    ToPort='443',
+                    CidrIpv6='::/0')],
             VpcId=Ref(vpc_id),
         ))
 
@@ -304,6 +364,7 @@ def generate_template():
     ))
 
     return template
+
 
 if __name__ == '__main__':
     print (generate_template().to_json())

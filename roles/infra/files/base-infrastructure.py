@@ -1,6 +1,6 @@
-from troposphere import Template, Ref, Join, Tags, Output
-from troposphere.ec2 import VPC, Subnet, InternetGateway, RouteTable, Route, VPCGatewayAttachment, \
-    SubnetRouteTableAssociation
+from troposphere import Template, Ref, Join, Select, Split, Tags, GetAtt, Output
+from troposphere.ec2 import VPC, VPCCidrBlock, Subnet, SubnetCidrBlock, InternetGateway, RouteTable, Route, \
+    VPCGatewayAttachment, SubnetRouteTableAssociation
 
 
 def generate_template():
@@ -24,6 +24,14 @@ def generate_template():
             Tags=Tags(
                 Application=ref_stack_id)))
 
+    # Create Cidr Block for IPv6
+    vpc_cidr_block = template.add_resource(
+        VPCCidrBlock(
+            'VPCCidrBlock',
+            AmazonProvidedIpv6CidrBlock=True,
+            VpcId=Ref(vpc),
+        ))
+
     internet_gateway = template.add_resource(
         InternetGateway(
             'InternetGateway',
@@ -46,10 +54,19 @@ def generate_template():
 
     template.add_resource(
         Route(
-            'Route',
+            'RouteIPv4',
             DependsOn='AttachGateway',
             GatewayId=Ref('InternetGateway'),
             DestinationCidrBlock='0.0.0.0/0',
+            RouteTableId=Ref(public_route_table),
+        ))
+
+    template.add_resource(
+        Route(
+            'RouteIPv6',
+            DependsOn='AttachGateway',
+            GatewayId=Ref('InternetGateway'),
+            DestinationIpv6CidrBlock="::/0",
             RouteTableId=Ref(public_route_table),
         ))
 
@@ -57,13 +74,16 @@ def generate_template():
     public_subnet1 = template.add_resource(
         Subnet(
             'PublicSubnet1',
+            DependsOn=vpc_cidr_block,
+            AssignIpv6AddressOnCreation=True,
             CidrBlock='10.0.0.0/24',
+            Ipv6CidrBlock=Join("", [Select(0, Split("00::/56", Select(0, GetAtt(vpc, 'Ipv6CidrBlocks')))), "00::/64"]),
             AvailabilityZone=Join("", [ref_region, 'a']),
-            MapPublicIpOnLaunch=True,
             VpcId=Ref(vpc),
             Tags=Tags(
                 Name='public-10.0.0.0',
-                Application=ref_stack_id)))
+                Application=ref_stack_id)
+        ))
 
     template.add_resource(
         SubnetRouteTableAssociation(

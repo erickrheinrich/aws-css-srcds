@@ -1,15 +1,3 @@
-# - hosts: localhost
-#   connection: local
-#   roles:
-#     - role: infra
-#   tags: ["infrastructure"]
-
-# - hosts: localhost
-#   connection: local
-#   roles:
-#     - role: upload-css-files
-#   tags: ["upload-css-files"]
-
 - hosts: localhost
   connection: local
   roles:
